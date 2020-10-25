@@ -18,3 +18,23 @@ class Row
     @row = [Cell.new, Cell.new, Cell.new, Cell.new]
   end
 end
+
+# this is for the colored pegs used in gameplay
+class CodeRow < Row
+end
+
+# this class is the shielded row that stores the answer
+class ShieldRow < CodeRow
+end
+
+# this is for the red and white pegs used to show the current guess accuracy.
+class KeyRow < Row
+end
+
+# the score
+class Score
+end
+
+# the Board
+class Board
+end
