@@ -4,7 +4,7 @@
 class Cell
   attr_accessor :cell, :color
 
-  def initialize
+  def initialize(color)
     @cell = cell
     @color = color
   end
@@ -14,8 +14,8 @@ end
 class Row
   attr_accessor :row
 
-  def initialize
-    @row = [Cell.new, Cell.new, Cell.new, Cell.new]
+  def initialize(color1, color2, color3, color4)
+    @row = [Cell.new(color1), Cell.new(color2), Cell.new(color3), Cell.new(color4)]
   end
 end
 
@@ -27,7 +27,8 @@ end
 class ShieldRow < CodeRow
 end
 
-# this is for the red and white pegs used to show the current guess accuracy. each holds 4 pegs just like row. 12 rows total.
+# this is for the red and white pegs used to show the current guess accuracy.
+# each holds 4 pegs just like row. 12 rows total.
 class KeyRow < Row
 end
 
