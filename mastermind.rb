@@ -14,8 +14,8 @@ end
 class Row
   attr_accessor :row
 
-  def initialize(color1, color2, color3, color4)
-    @row = [Cell.new(color1), Cell.new(color2), Cell.new(color3), Cell.new(color4)]
+  def initialize
+    @row = [Cell.new, Cell.new, Cell.new, Cell.new]
   end
 end
 
