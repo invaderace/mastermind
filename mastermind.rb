@@ -4,9 +4,9 @@
 class Cell
   attr_accessor :cell, :color
 
-  def initialize(color)
+  def initialize
     @cell = cell
-    @color = color
+    @color = 'o'
   end
 end
 
