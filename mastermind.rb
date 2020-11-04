@@ -38,6 +38,19 @@ end
 
 # the Board
 class Board
+  attr_accessor :board, :shield_row, :rows, :key_rows, :score
+
+  def initialize
+    @board = board
+    @shield_row = ShieldRow.new
+    @rows = []
+    @key_rows = []
+    12.times do
+      @rows.push(Row.new)
+      @key_rows.push(KeyRow.new)
+    end
+    @score = []
+  end
 end
 
 # the game
