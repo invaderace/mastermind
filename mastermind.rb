@@ -51,6 +51,17 @@ class Board
     end
     @score = []
   end
+
+  def row_colors(i) #allows to access the row of colors. not sure how to use this just yet.
+    p @rows[i].row[0].color
+    p @rows[i].row[1].color
+    p @rows[i].row[2].color
+    p @rows[i].row[3].color
+  end
+
+  def view_current
+    puts @board[11]
+  end
 end
 
 # the game
