@@ -2,10 +2,9 @@
 
 # this just holds cell information. both for lines and for scorekeeping cells.
 class Cell
-  attr_accessor :cell, :color
+  attr_accessor :color
 
   def initialize
-    @cell = cell
     @color = 'o'
   end
 end
