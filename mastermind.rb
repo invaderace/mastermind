@@ -82,6 +82,22 @@ class Board
   # end
 end
 
+# player class. contains players regardless of human or computer.
+class Player
+  def initialize(name)
+    @name = name
+  end
+end
+
+class HumanPlayer < Player
+end
+
+class ComputerPlayer < Player
+end
+
 # the game
 class Game
+  def initialize
+    @board = Board.new
+  end
 end
