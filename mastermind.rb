@@ -99,5 +99,32 @@ end
 class Game
   def initialize
     @board = Board.new
+    make_players
+    play_game
+  end
+
+  def make_players
+    make_player1
+    make_player2
+  end
+
+  def make_player1
+  end
+
+  def make_player2
+    puts 'Is Player 2 human or computer?'
+    answer = gets.chomp
+    if answer.downcase == 'human'
+      # make a human player
+    elsif answer.downcase == 'computer' 
+      # make a computer player
+    else
+      puts 'Sorry, please try again.'
+      make_player2
+    end
+  end
+
+  def play_game
+    # fuck you rubocop
   end
 end
