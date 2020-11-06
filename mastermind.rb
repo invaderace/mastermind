@@ -92,7 +92,15 @@ end
 class HumanPlayer < Player
 end
 
+# just for computer opponent.
 class ComputerPlayer < Player
+  def initialize
+    @name = 'Larry'
+    puts "Hi, my name is Larry."
+  end
+
+  def choose_colors
+  end
 end
 
 # the game
@@ -100,31 +108,36 @@ class Game
   def initialize
     @board = Board.new
     make_players
-    play_game
   end
 
   def make_players
-    make_player1
+    make_human_player(@player1)
     make_player2
   end
 
-  def make_player1
+  # ask human for name, set name
+  def make_human_player(player)
+    puts 'Player, what is your name?'
+    player = HumanPlayer.new(gets.chomp)
   end
 
   def make_player2
-    puts 'Is Player 2 human or computer?'
+    puts 'Is this player human or computer?'
     answer = gets.chomp
     if answer.downcase == 'human'
-      # make a human player
-    elsif answer.downcase == 'computer' 
-      # make a computer player
+      make_human_player(@player2)
+    elsif answer.downcase == 'computer'
+      @player2 = ComputerPlayer.new
     else
       puts 'Sorry, please try again.'
       make_player2
     end
   end
 
-  def play_game
+  def play
     # fuck you rubocop
   end
 end
+
+my_game = Game.new
+my_game.play
