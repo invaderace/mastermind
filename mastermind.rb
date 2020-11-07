@@ -84,12 +84,23 @@ end
 
 # player class. contains players regardless of human or computer.
 class Player
+  attr_accessor :name, :colors
+
   def initialize(name)
     @name = name
+    @colors = colors
   end
 end
 
+# human player.
 class HumanPlayer < Player
+  def choose_colors
+    puts 'Choose your colors, left to right.'
+    @colors = []
+    4.times do
+      @colors.push(gets.chomp)
+    end
+  end
 end
 
 # just for computer opponent.
@@ -97,6 +108,7 @@ class ComputerPlayer < Player
   def initialize
     @name = 'Larry'
     puts "Hi, my name is Larry."
+    @colors = colors
   end
 
   def choose_colors
@@ -105,27 +117,32 @@ end
 
 # the game
 class Game
+  attr_accessor :board, :player1, :player2
+
   def initialize
+    @player1 = player1
+    @player2 = player2
     @board = Board.new
     make_players
   end
 
   def make_players
-    make_human_player(@player1)
+    make_player1
     make_player2
   end
 
   # ask human for name, set name
-  def make_human_player(player)
-    puts 'Player, what is your name?'
-    player = HumanPlayer.new(gets.chomp)
+  def make_player1
+    puts 'Player 1, what is your name?'
+    @player1 = HumanPlayer.new(gets.chomp)
   end
 
   def make_player2
     puts 'Is this player human or computer?'
     answer = gets.chomp
     if answer.downcase == 'human'
-      make_human_player(@player2)
+      puts 'Player 2, what is your name?'
+      @player2 = HumanPlayer.new(gets.chomp)
     elsif answer.downcase == 'computer'
       @player2 = ComputerPlayer.new
     else
