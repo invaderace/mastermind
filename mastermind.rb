@@ -32,21 +32,21 @@ class KeyRow < Row
 end
 
 # the score - there will be two of these (white and red), with cells up to 30
-class Score
-  attr_accessor :total, :board
+# class Score
+#   attr_accessor :total, :board
 
-  def initialize
-    @total = 0
-    @board = []
-    30.times do
-      @board.push('o')
-    end
-  end
-end
+#   def initialize
+#     @total = 0
+#     @board = []
+#     30.times do
+#       @board.push('o')
+#     end
+#   end
+# end
 
 # the Board
 class Board
-  attr_accessor :board, :shield_row, :rows, :key_rows, :player1_score, :player2_score, :scoreboard
+  attr_accessor :board, :shield_row, :rows, :key_rows, # :player1_score, :player2_score, :scoreboard
 
   def initialize
     @board = board
@@ -57,17 +57,17 @@ class Board
       @rows.push(Row.new)
       @key_rows.push(KeyRow.new)
     end
-    @player1_score = Score.new
-    @player2_score = Score.new
-    @scoreboard = []
+    # @player1_score = Score.new
+    # @player2_score = Score.new
+    # @scoreboard = []
   end
 
-  def fill_scoreboard
-    30.times { |i| 
-      @scoreboard.push([@player1_score.board[i], @player2_score.board[i]])
-      i += 1
-    }
-  end
+  # def fill_scoreboard
+  #   30.times { |i|
+  #     @scoreboard.push([@player1_score.board[i], @player2_score.board[i]])
+  #     i += 1
+  #   }
+  # end
 
   # allows to access the row of colors. not sure how to use this just yet.
   # def row_colors(i)
@@ -107,7 +107,7 @@ end
 class ComputerPlayer < Player
   def initialize
     @name = 'Larry'
-    puts "Hi, my name is Larry."
+    puts 'Hi, my name is Larry.'
     @colors = colors
   end
 
