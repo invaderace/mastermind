@@ -5,7 +5,7 @@
 # the same row function. decode rows probably can be stored in a hash for easy
 # access.
 class Board
-  attr_accessor :shield_row, :decoding_rows, :key_rows
+  attr_accessor :shield_row, :decoding_rows, :key_rows, :line_width
 
   def initialize
     @shield_row = make_shield_row
@@ -28,7 +28,30 @@ class Board
     hash_of_rows[i += 1] = make_row until i == 12
     hash_of_rows
   end
+
+  # let's work on displaying the board.
+  def display
+    system 'clear'
+    @line_width = 60
+    display_header
+    display_board
+  end
+
+  def display_header
+    4.times{puts}
+    puts "Mastermind".center(line_width)
+    2.times{puts}
+  end
+
+  def display_board
+    i = 12
+    while i > 0
+      puts "\#\#\#\# || #{@decoding_rows[i].join '  '} || #{@key_rows[i].join}".center(line_width)
+      i -= 1
+    end
+    2.times{puts}
+  end
 end
 
 my_board = Board.new
-puts my_board
+my_board.display
