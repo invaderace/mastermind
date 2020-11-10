@@ -35,6 +35,7 @@ class Board
     @line_width = 60
     display_header
     display_board
+    display_legend
   end
 
   def display_header
@@ -50,6 +51,13 @@ class Board
       i -= 1
     end
     2.times { puts }
+  end
+
+  def display_legend
+    puts '---------------------------------------------'.center(line_width)
+    puts '-  This is where rules can go. I dunno yet. -'.center(line_width)
+    puts '---------------------------------------------'.center(line_width)
+    puts
   end
 end
 
