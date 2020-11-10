@@ -23,10 +23,10 @@ class Board
 
   # this should hold 12 key/value combos. key: 1-12. value: array of entries.
   def make_decoding_or_key_rows
-    decoding_rows = {}
+    hash_of_rows = {}
     i = 0
-    decoding_rows[i += 1] = make_row until i == 12
-    decoding_rows
+    hash_of_rows[i += 1] = make_row until i == 12
+    hash_of_rows
   end
 end
 
