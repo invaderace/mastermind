@@ -29,7 +29,7 @@ class Board
     hash_of_rows
   end
 
-  # let's work on displaying the board.
+  # display the board, split into components.
   def display
     system 'clear'
     @line_width = 60
@@ -38,18 +38,18 @@ class Board
   end
 
   def display_header
-    4.times{puts}
-    puts "Mastermind".center(line_width)
-    2.times{puts}
+    4.times { puts }
+    puts 'Mastermind'.center(line_width)
+    2.times { puts }
   end
 
   def display_board
     i = 12
-    while i > 0
+    while i.positive?
       puts "\#\#\#\# || #{@decoding_rows[i].join '  '} || #{@key_rows[i].join}".center(line_width)
       i -= 1
     end
-    2.times{puts}
+    2.times { puts }
   end
 end
 
