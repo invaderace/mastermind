@@ -61,5 +61,44 @@ class Board
   end
 end
 
+# duh.
+class HumanPlayer
+  attr_accessor :name, :guess, :score
+
+  def initialize
+    @name = name
+    @guess = guess
+    @score = 0
+  end
+end
+
+# duh.
+class ComputerPlayer
+  attr_accessor :name, :score
+
+  def initialize
+    @name = 'Computer'
+    @score = 0
+  end
+end
+
+class Game
+  attr_accessor
+
+  def initialize
+    @player1 = player1
+    @player2 = player2
+  end
+
+  # explain the rules.
+  # def intro
+  # end
+
+  def play
+    
+  end
+
+end
+
 my_board = Board.new
 my_board.display
