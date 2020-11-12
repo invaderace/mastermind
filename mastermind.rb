@@ -5,12 +5,13 @@
 # the same row function. decode rows probably can be stored in a hash for easy
 # access.
 class Board
-  attr_accessor :shield_row, :decoding_rows, :key_rows, :line_width
+  attr_accessor :shield_row, :decoding_rows, :key_rows, :line_width, :legend_contents
 
   def initialize
     @shield_row = make_shield_row
     @decoding_rows = make_decoding_or_key_rows
     @key_rows = make_decoding_or_key_rows
+    @legend_contents = legend_contents
   end
 
   def make_row
@@ -55,7 +56,7 @@ class Board
 
   def display_legend
     puts '---------------------------------------------'.center(line_width)
-    puts '-  This is where rules can go. I dunno yet. -'.center(line_width)
+    puts " #{legend_contents} ".center(line_width)
     puts '---------------------------------------------'.center(line_width)
     puts
   end
@@ -83,22 +84,39 @@ class ComputerPlayer
 end
 
 class Game
-  attr_accessor
+  attr_accessor :player1, :player2, :board
 
   def initialize
     @player1 = player1
     @player2 = player2
+    @board = Board.new
   end
 
   # explain the rules.
-  # def intro
+  # defintro
   # end
 
+  # add methods to choose players. ie Human or Computer? Get names. etc.
+
   def play
-    
+    explain_rules
   end
 
+  def explain_rules
+    @board.legend_contents = "Hi. Let's play mastermind."
+    @board.display
+    if enter?
+      @board.legend_contents = 'Are you ready?'
+    end
+    @board.display
+  end
+
+  def enter?
+    false
+    true if gets.chomp == ''
+  end
 end
 
-my_board = Board.new
-my_board.display
+my_game = Game.new
+my_game.play
+
