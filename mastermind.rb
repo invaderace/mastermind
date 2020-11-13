@@ -11,7 +11,7 @@ class Board
     @shield_row = make_shield_row
     @decoding_rows = make_decoding_or_key_rows
     @key_rows = make_decoding_or_key_rows
-    @legend_contents = legend_contents
+    @legend_contents = 'Hi. Welcome to mastermind.'
   end
 
   def make_row
@@ -36,6 +36,7 @@ class Board
     @line_width = 60
     display_header
     display_board
+    display_shield_row
     display_legend
   end
 
@@ -51,6 +52,11 @@ class Board
       puts "\#\#\#\# || #{@decoding_rows[i].join '  '} || #{@key_rows[i].join}".center(line_width)
       i -= 1
     end
+    2.times { puts }
+  end
+
+  def display_shield_row
+    puts "|| #{@shield_row.join '  '} ||".center(line_width)
     2.times { puts }
   end
 
@@ -70,6 +76,7 @@ class HumanPlayer
     @name = name
     @guess = guess
     @score = 0
+    @rules = rules
   end
 end
 
@@ -99,21 +106,36 @@ class Game
   # add methods to choose players. ie Human or Computer? Get names. etc.
 
   def play
-    explain_rules
+    tell(hello)
+    tell(rules)
   end
 
-  def explain_rules
-    @board.legend_contents = "Hi. Let's play mastermind."
+  def tell(things)
     @board.display
-    if enter?
-      @board.legend_contents = 'Are you ready?'
-    end
-    @board.display
+    things.each { |thing|
+      @board.legend_contents = thing if gets.chomp
+      @board.display
+    }
   end
 
-  def enter?
-    false
-    true if gets.chomp == ''
+  def hello
+    rules = [
+      'Are you ready?',
+      "Ok, let's begin."
+    ]
+  end
+
+  def rules
+    [
+      'First, the codemaker will create a four digit code.',
+      'The codebreaker will try to guess in 12 turns.',
+      'For each guess, the key on the right  will show the result.',
+      'For each correct digit in the correct spot it will show "O".',
+      'For each correct digit out of place it will show "o".',
+      'For each incorrect digit you will get 30 lashes.',
+      "......just seeing if you're paying attention still.",
+      'Incorrect digits get nothing.',
+    ]
   end
 end
 
