@@ -1,160 +1,144 @@
 # frozen_string_literal: true
 
-# this just holds cell information. both for lines and for scorekeeping cells.
-class Cell
-  attr_accessor :color
-
-  def initialize
-    @color = 'o'
-  end
-end
-
-# this will be for each row of gameplay.
-class Row
-  attr_accessor :row
-
-  def initialize
-    @row = [Cell.new, Cell.new, Cell.new, Cell.new]
-  end
-end
-
-# this is for the colored pegs used in gameplay. holds 4 pegs. 12 rows total.
-class CodeRow < Row
-end
-
-# this class is the shielded row that stores the answer. only 1 row.
-class ShieldRow < CodeRow
-end
-
-# this is for the red and white pegs used to show the current guess accuracy.
-# each holds 4 pegs just like row. 12 rows total.
-class KeyRow < Row
-end
-
-# the score - there will be two of these (white and red), with cells up to 30
-# class Score
-#   attr_accessor :total, :board
-
-#   def initialize
-#     @total = 0
-#     @board = []
-#     30.times do
-#       @board.push('o')
-#     end
-#   end
-# end
-
-# the Board
+# game board should setup the board elements and be able to display.
+# each row will be an array. I'm thinking shield row and decode rows will be
+# the same row function. decode rows probably can be stored in a hash for easy
+# access.
 class Board
-  attr_accessor :board, :shield_row, :rows, :key_rows, # :player1_score, :player2_score, :scoreboard
+  attr_accessor :shield_row, :decoding_rows, :key_rows, :line_width, :legend_contents
 
   def initialize
-    @board = board
-    @shield_row = ShieldRow.new
-    @rows = []
-    @key_rows = []
-    12.times do
-      @rows.push(Row.new)
-      @key_rows.push(KeyRow.new)
-    end
-    # @player1_score = Score.new
-    # @player2_score = Score.new
-    # @scoreboard = []
+    @shield_row = make_shield_row
+    @decoding_rows = make_decoding_or_key_rows
+    @key_rows = make_decoding_or_key_rows
+    @legend_contents = 'Hi. Welcome to mastermind.'
   end
 
-  # def fill_scoreboard
-  #   30.times { |i|
-  #     @scoreboard.push([@player1_score.board[i], @player2_score.board[i]])
-  #     i += 1
-  #   }
-  # end
+  def make_row
+    Array.new(4, '_')
+  end
 
-  # allows to access the row of colors. not sure how to use this just yet.
-  # def row_colors(i)
-  #   p @rows[i].row[0].color
-  #   p @rows[i].row[1].color
-  #   p @rows[i].row[2].color
-  #   p @rows[i].row[3].color
-  # end
+  def make_shield_row
+    make_row
+  end
 
-  # def view_current
-  #   puts @board[11]
-  # end
+  # this should hold 12 key/value combos. key: 1-12. value: array of entries.
+  def make_decoding_or_key_rows
+    hash_of_rows = {}
+    i = 0
+    hash_of_rows[i += 1] = make_row until i == 12
+    hash_of_rows
+  end
+
+  # display the board, split into components.
+  def display
+    system 'clear'
+    @line_width = 60
+    display_header
+    display_board
+    display_shield_row
+    display_legend
+  end
+
+  def display_header
+    4.times { puts }
+    puts 'Mastermind'.center(line_width)
+    2.times { puts }
+  end
+
+  def display_board
+    i = 12
+    while i.positive?
+      puts "\#\#\#\# || #{@decoding_rows[i].join '  '} || #{@key_rows[i].join}".center(line_width)
+      i -= 1
+    end
+    2.times { puts }
+  end
+
+  def display_shield_row
+    puts "|| #{@shield_row.join '  '} ||".center(line_width)
+    2.times { puts }
+  end
+
+  def display_legend
+    puts '---------------------------------------------'.center(line_width)
+    puts " #{legend_contents} ".center(line_width)
+    puts '---------------------------------------------'.center(line_width)
+    puts
+  end
 end
 
-# player class. contains players regardless of human or computer.
-class Player
-  attr_accessor :name, :colors
+# duh.
+class HumanPlayer
+  attr_accessor :name, :guess, :score
 
-  def initialize(name)
+  def initialize
     @name = name
-    @colors = colors
+    @guess = guess
+    @score = 0
+    @rules = rules
   end
 end
 
-# human player.
-class HumanPlayer < Player
-  def choose_colors
-    puts 'Choose your colors, left to right.'
-    @colors = []
-    4.times do
-      @colors.push(gets.chomp)
-    end
-  end
-end
+# duh.
+class ComputerPlayer
+  attr_accessor :name, :score
 
-# just for computer opponent.
-class ComputerPlayer < Player
   def initialize
-    @name = 'Larry'
-    puts 'Hi, my name is Larry.'
-    @colors = colors
-  end
-
-  def choose_colors
+    @name = 'Computer'
+    @score = 0
   end
 end
 
-# the game
 class Game
-  attr_accessor :board, :player1, :player2
+  attr_accessor :player1, :player2, :board
 
   def initialize
     @player1 = player1
     @player2 = player2
     @board = Board.new
-    make_players
   end
 
-  def make_players
-    make_player1
-    make_player2
-  end
+  # explain the rules.
+  # defintro
+  # end
 
-  # ask human for name, set name
-  def make_player1
-    puts 'Player 1, what is your name?'
-    @player1 = HumanPlayer.new(gets.chomp)
-  end
-
-  def make_player2
-    puts 'Is this player human or computer?'
-    answer = gets.chomp
-    if answer.downcase == 'human'
-      puts 'Player 2, what is your name?'
-      @player2 = HumanPlayer.new(gets.chomp)
-    elsif answer.downcase == 'computer'
-      @player2 = ComputerPlayer.new
-    else
-      puts 'Sorry, please try again.'
-      make_player2
-    end
-  end
+  # add methods to choose players. ie Human or Computer? Get names. etc.
 
   def play
-    # fuck you rubocop
+    tell(hello)
+    tell(rules)
+  end
+
+  def tell(things)
+    @board.display
+    things.each { |thing|
+      @board.legend_contents = thing if gets.chomp
+      @board.display
+    }
+  end
+
+  def hello
+    rules = [
+      'Are you ready?',
+      "Ok, let's begin."
+    ]
+  end
+
+  def rules
+    [
+      'First, the codemaker will create a four digit code.',
+      'The codebreaker will try to guess in 12 turns.',
+      'For each guess, the key on the right  will show the result.',
+      'For each correct digit in the correct spot it will show "O".',
+      'For each correct digit out of place it will show "o".',
+      'For each incorrect digit you will get 30 lashes.',
+      "......just seeing if you're paying attention still.",
+      'Incorrect digits get nothing.',
+    ]
   end
 end
 
 my_game = Game.new
 my_game.play
+
