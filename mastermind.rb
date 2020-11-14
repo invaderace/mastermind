@@ -70,31 +70,43 @@ end
 
 # duh.
 class HumanPlayer
-  attr_accessor :name, :guess, :score
+  attr_accessor :code, :guess, :name, :score
 
   def initialize
-    @name = name
+    @code = code
     @guess = guess
+    @name = name
     @score = 0
+  end
+
+  def code_input
+    @code = gets.chomp.split('')
   end
 end
 
 # duh.
 class ComputerPlayer
-  attr_accessor :name, :score
+  attr_accessor :code, :guess, :name, :score
 
   def initialize
+    @code = code
+    @guess = guess
     @name = 'Computer'
     @score = 0
   end
+
+  def code_input
+    @code = rand(6667).to_s.split('')
+  end
 end
 
+# All gameplay related things get made and stored here (players, board)
 class Game
   attr_accessor :player1, :player2, :board
 
   def initialize
     @player1 = HumanPlayer.new
-    @player2
+    # @player2
     @board = Board.new
   end
 
@@ -108,12 +120,13 @@ class Game
     @board.display
     set_player1
     set_player2
-
     # tell(rules)
+    secret_code
+    # take turns
   end
 
   def set_player1
-    @player1.name = player_name if gets.chomp
+    @player1.name = player_name
     hello(@player1)
   end
 
@@ -130,7 +143,7 @@ class Game
 
   def tell(things)
     things.each { |thing|
-      @board.legend_contents = thing
+      @board.legend_contents = thing if gets.chomp
       @board.display
     }
   end
@@ -142,12 +155,12 @@ class Game
       answer
     else
       tell(sorry)
-      ask_name if gets.chomp
+      player_name if gets.chomp
     end
   end
 
   def player_type
-    tell(ask_human_or_computer) if gets.chomp
+    tell(ask_human_or_computer)
     answer = gets.chomp
     if answer.downcase == 'human' || answer.downcase == 'computer'
       answer
@@ -157,14 +170,27 @@ class Game
     end
   end
 
+  def secret_code
+    tell(ask_code)
+    @player2.code_input
+    #input code
+  end
+
   def hello(player)
-    @board.legend_contents = "Hi, #{player.name}."
+    @board.legend_contents = "Hi #{player.name}."
     @board.display
   end
 
   def introduce(player)
     @board.legend_contents = "This is #{player.name}."
     @board.display
+  end
+
+  def ask_code 
+    [
+      'The codemaster needs to input a secret code.',
+      'Codemaster, enter your code please.'
+    ]
   end
 
   def ask_human_or_computer
@@ -195,3 +221,4 @@ end
 
 my_game = Game.new
 my_game.play
+p my_game.player2.code
