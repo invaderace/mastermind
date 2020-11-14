@@ -68,8 +68,8 @@ class Board
   end
 end
 
-# duh.
-class HumanPlayer
+# both player types setup.
+class Player
   attr_accessor :code, :guess, :name, :score
 
   def initialize
@@ -78,21 +78,19 @@ class HumanPlayer
     @name = name
     @score = 0
   end
+end
 
-  def code_input
+# duh.
+class HumanPlayer < Player
+    def code_input
     @code = gets.chomp.split('')
   end
 end
 
 # duh.
-class ComputerPlayer
-  attr_accessor :code, :guess, :name, :score
-
-  def initialize
-    @code = code
-    @guess = guess
+class ComputerPlayer < Player
+  def name
     @name = 'Computer'
-    @score = 0
   end
 
   def code_input
@@ -137,6 +135,7 @@ class Game
       hello(@player2)
     else
       @player2 = ComputerPlayer.new
+      @player2.name
       introduce(@player2)
     end
   end
