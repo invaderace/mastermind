@@ -76,7 +76,6 @@ class HumanPlayer
     @name = name
     @guess = guess
     @score = 0
-    @rules = rules
   end
 end
 
@@ -94,8 +93,8 @@ class Game
   attr_accessor :player1, :player2, :board
 
   def initialize
-    @player1 = player1
-    @player2 = player2
+    @player1 = HumanPlayer.new
+    @player2
     @board = Board.new
   end
 
@@ -106,23 +105,59 @@ class Game
   # add methods to choose players. ie Human or Computer? Get names. etc.
 
   def play
-    tell(hello)
-    tell(rules)
+    @board.display
+    @player1.name = player_name if gets.chomp
+    hello(@player1)
+    @player2 = (player_type == 'human' ? HumanPlayer.new : ComputerPlayer.new)
+    @player2.class == HumanPlayer ? @player2.name = player_name : introduce(@player2)
+    # tell(rules)
   end
 
   def tell(things)
-    @board.display
     things.each { |thing|
-      @board.legend_contents = thing if gets.chomp
+      @board.legend_contents = thing
       @board.display
     }
   end
 
-  def hello
-    rules = [
-      'Are you ready?',
-      "Ok, let's begin."
-    ]
+  def player_name
+    tell(ask_name)
+    answer = gets.chomp
+    if answer != ''
+      answer
+    else
+      tell(sorry)
+      ask_name if gets.chomp
+    end
+  end
+
+  def player_type
+    tell(ask_human_or_computer) if gets.chomp
+    answer = gets.chomp
+    if answer.downcase == 'human' || answer.downcase == 'computer'
+      answer
+    else
+      tell(sorry)
+      player_type
+    end
+  end
+
+  def hello(player)
+    @board.legend_contents = "Hi, #{player.name}."
+    @board.display
+  end
+
+  def introduce(player)
+    @board.legend_contents = "This is #{player.name}."
+    @board.display
+  end
+
+  def ask_human_or_computer
+    ['Is this player human or computer?']
+  end
+
+  def ask_name
+    ['What is your name?']
   end
 
   def rules
@@ -134,11 +169,15 @@ class Game
       'For each correct digit out of place it will show "o".',
       'For each incorrect digit you will get 30 lashes.',
       "......just seeing if you're paying attention still.",
-      'Incorrect digits get nothing.',
+      'Incorrect digits get nothing.'
     ]
+  end
+
+  def sorry
+    ['Sorry, please try that again.']
   end
 end
 
 my_game = Game.new
 my_game.play
-
+puts my_game.player2.class
