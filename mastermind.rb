@@ -106,11 +106,26 @@ class Game
 
   def play
     @board.display
+    set_player1
+    set_player2
+
+    # tell(rules)
+  end
+
+  def set_player1
     @player1.name = player_name if gets.chomp
     hello(@player1)
-    @player2 = (player_type == 'human' ? HumanPlayer.new : ComputerPlayer.new)
-    @player2.class == HumanPlayer ? @player2.name = player_name : introduce(@player2)
-    # tell(rules)
+  end
+
+  def set_player2
+    if player_type == 'human'
+      @player2 = HumanPlayer.new
+      @player2.name = player_name
+      hello(@player2)
+    else
+      @player2 = ComputerPlayer.new
+      introduce(@player2)
+    end
   end
 
   def tell(things)
@@ -180,4 +195,3 @@ end
 
 my_game = Game.new
 my_game.play
-puts my_game.player2.class
