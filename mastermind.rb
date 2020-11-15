@@ -85,6 +85,10 @@ class HumanPlayer < Player
     def code_input
     @code = gets.chomp.split('')
   end
+
+  def guess_input
+    @guess = gets.chomp.split('')
+  end
 end
 
 # duh.
@@ -100,12 +104,11 @@ end
 
 # All gameplay related things get made and stored here (players, board)
 class Game
-  attr_accessor :player1, :player2, :board
+  attr_accessor :board, :player1, :player2
 
   def initialize
-    @player1 = HumanPlayer.new
-    # @player2
     @board = Board.new
+    @player1 = HumanPlayer.new
   end
 
   # explain the rules.
@@ -120,31 +123,38 @@ class Game
     set_player2
     # tell(rules)
     secret_code
-    # take turns
+    guesses
   end
 
-  def set_player1
-    @player1.name = player_name
-    hello(@player1)
+  def guesses
+    tell(enter_guess)
+    @player1.guess_input
+    @board.decoding_rows[1] = @player1.guess
+    # @board.key_rows = 
+    check_guess
   end
 
-  def set_player2
-    if player_type == 'human'
-      @player2 = HumanPlayer.new
-      @player2.name = player_name
-      hello(@player2)
-    else
-      @player2 = ComputerPlayer.new
-      @player2.name
-      introduce(@player2)
+  # should output an array of guess results ('●' or '◯').
+  def check_guess
+    result = []
+    guess_placeholder = [].concat(@player1.guess)
+    code_placeholder = [].concat(@player2.code)
+
+    i = 3
+    while i >= 0
+      if guess_placeholder[i] == code_placeholder[i]
+        result.push('●')
+        guess_placeholder.delete_at(i)
+        code_placeholder.delete_at(i)
+      end
+      i -= 1
     end
-  end
 
-  def tell(things)
-    things.each { |thing|
-      @board.legend_contents = thing if gets.chomp
-      @board.display
-    }
+    guess_placeholder.each do |i|
+      if code_placeholder.include?(i)
+        result.push('◯')
+      end
+    end
   end
 
   def player_name
@@ -172,7 +182,30 @@ class Game
   def secret_code
     tell(ask_code)
     @player2.code_input
-    #input code
+  end
+
+  def set_player1
+    @player1.name = player_name
+    hello(@player1)
+  end
+
+  def set_player2
+    if player_type == 'human'
+      @player2 = HumanPlayer.new
+      @player2.name = player_name
+      hello(@player2)
+    else
+      @player2 = ComputerPlayer.new
+      @player2.name
+      introduce(@player2)
+    end
+  end
+
+  def tell(things)
+    things.each { |thing|
+      @board.legend_contents = thing if gets.chomp
+      @board.display
+    }
   end
 
   def hello(player)
@@ -200,6 +233,10 @@ class Game
     ['What is your name?']
   end
 
+  def enter_guess
+    ['Codebreaker, enter your guess please.']
+  end
+
   def rules
     [
       'First, the codemaker will create a four digit code.',
@@ -220,4 +257,4 @@ end
 
 my_game = Game.new
 my_game.play
-p my_game.player2.code
+p my_game
