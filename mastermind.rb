@@ -73,7 +73,7 @@ class Player
   attr_accessor :code, :guess, :name, :result, :score
 
   def initialize
-    @code = code
+    @code = []
     @guess = guess
     @name = name
     @score = 0
@@ -82,7 +82,7 @@ end
 
 # duh.
 class HumanPlayer < Player
-    def code_input
+  def code_input
     @code = gets.chomp.split('')
   end
 
@@ -98,7 +98,7 @@ class ComputerPlayer < Player
   end
 
   def code_input
-    @code = rand(6667).to_s.split('')
+    4.times { @code.push(rand(6).to_s) }
   end
 end
 
@@ -135,7 +135,6 @@ class Game
       tell(enter_guess)
       @player1.guess_input
       @board.decoding_rows[i] = @player1.guess
-      # @board.key_rows = 
       @board.key_rows[i] = check_guess
       @board.display
       win?
@@ -143,7 +142,7 @@ class Game
     end
   end
 
-  # should output an array of guess results ('●' or '◯').
+  # should output an array of guess results.
   def check_guess
     reset_guess
     check_number_and_position
@@ -180,11 +179,9 @@ class Game
   end
 
   def fill_result
-    while @result.length < 4
-      @result.push("_")
-    end
+    @result.push('_') while @result.length < 4
   end
-  
+
   def player_name
     tell(ask_name)
     answer = gets.chomp
@@ -230,14 +227,14 @@ class Game
   end
 
   def win?
-    true if @result == ["●", "●", "●", "●"]
+    true if @result == ['●', '●', '●', '●']
   end
 
   def tell(things)
-    things.each { |thing|
+    things.each do |thing|
       @board.legend_contents = thing if gets.chomp
       @board.display
-    }
+    end
   end
 
   def hello(player)
@@ -250,7 +247,7 @@ class Game
     @board.display
   end
 
-  def ask_code 
+  def ask_code
     [
       'The codemaster needs to input a secret code.',
       'Codemaster, enter your code please.'
@@ -289,3 +286,4 @@ end
 
 my_game = Game.new
 my_game.play
+p my_game
