@@ -70,7 +70,7 @@ end
 
 # both player types setup.
 class Player
-  attr_accessor :code, :guess, :name, :score
+  attr_accessor :code, :guess, :name, :result, :score
 
   def initialize
     @code = code
@@ -104,11 +104,14 @@ end
 
 # All gameplay related things get made and stored here (players, board)
 class Game
-  attr_accessor :board, :player1, :player2
+  attr_accessor :board, :player1, :player2, :result
 
   def initialize
     @board = Board.new
+    @code_placeholder = []
+    @guess_placeholder = []
     @player1 = HumanPlayer.new
+    @result = []
   end
 
   # explain the rules.
@@ -127,36 +130,61 @@ class Game
   end
 
   def guesses
-    tell(enter_guess)
-    @player1.guess_input
-    @board.decoding_rows[1] = @player1.guess
-    # @board.key_rows = 
-    check_guess
+    i = 1
+    until win?
+      tell(enter_guess)
+      @player1.guess_input
+      @board.decoding_rows[i] = @player1.guess
+      # @board.key_rows = 
+      @board.key_rows[i] = check_guess
+      @board.display
+      win?
+      i += 1
+    end
   end
 
   # should output an array of guess results ('●' or '◯').
   def check_guess
-    result = []
-    guess_placeholder = [].concat(@player1.guess)
-    code_placeholder = [].concat(@player2.code)
+    reset_guess
+    check_number_and_position
+    check_number_only
+    fill_result
+    @result
+  end
 
+  def reset_guess
+    @result = []
+    @guess_placeholder = [].concat(@player1.guess)
+    @code_placeholder = [].concat(@player2.code)
+  end
+
+  def check_number_and_position
     i = 3
     while i >= 0
-      if guess_placeholder[i] == code_placeholder[i]
-        result.push('●')
-        guess_placeholder.delete_at(i)
-        code_placeholder.delete_at(i)
+      if @guess_placeholder[i] == @code_placeholder[i]
+        @result.push('●')
+        @guess_placeholder.delete_at(i)
+        @code_placeholder.delete_at(i)
       end
       i -= 1
     end
+  end
 
-    guess_placeholder.each do |i|
-      if code_placeholder.include?(i)
-        result.push('◯')
+  def check_number_only
+    @guess_placeholder.each do |i|
+      if @code_placeholder.include?(i)
+        @result.push('◯')
+        @code_placeholder.delete_at(@code_placeholder.index(i))
       end
     end
   end
 
+  def fill_result
+    while @result.length < 4
+      @result.push("_")
+    end
+  end
+  
   def player_name
     tell(ask_name)
     answer = gets.chomp
@@ -199,6 +227,10 @@ class Game
       @player2.name
       introduce(@player2)
     end
+  end
+
+  def win?
+    true if @result == ["●", "●", "●", "●"]
   end
 
   def tell(things)
@@ -257,4 +289,3 @@ end
 
 my_game = Game.new
 my_game.play
-p my_game
