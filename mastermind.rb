@@ -1,4 +1,66 @@
+require 'pry'
+
 # frozen_string_literal: true
+
+# This module only holds text to be told to players.
+module Instructions
+  def tell(things)
+    tell_string(things) if things.class == String
+    tell_array(things) if things.class == Array
+  end
+
+  def tell_array(things)
+    things.each do |thing|
+      @board.legend_contents = thing if gets.chomp
+      @board.display
+    end
+  end
+
+  def tell_string(things)
+    @board.legend_contents = things
+    @board.display
+  end
+
+  def ask_code
+    [
+      'The codemaster needs to input a secret code.',
+      'Codemaster, enter your code please.'
+    ]
+  end
+
+  def ask_human_or_computer
+    'Is this player human or computer?'
+  end
+
+  def ask_name
+    'What is your name?'
+  end
+
+  def enter_guess
+    'Codebreaker, enter your guess please.'
+  end
+
+  def round_winner
+    'The Codebreaker solved this round!'
+  end
+
+  def rules
+    [
+      'First, the codemaker will create a four digit code.',
+      'The codebreaker will try to guess in 12 turns.',
+      'For each guess, the key on the right  will show the result.',
+      'For each correct digit in the correct spot it will show "O".',
+      'For each correct digit out of place it will show "o".',
+      'For each incorrect digit you will get 30 lashes.',
+      "......just seeing if you're paying attention still.",
+      'Incorrect digits get nothing.'
+    ]
+  end
+
+  def sorry
+    'Sorry, please try that again.'
+  end
+end
 
 # game board should setup the board elements and be able to display.
 # each row will be an array. I'm thinking shield row and decode rows will be
@@ -104,6 +166,8 @@ end
 
 # All gameplay related things get made and stored here (players, board)
 class Game
+  include Instructions
+
   attr_accessor :board, :player1, :player2, :result
 
   def initialize
@@ -114,16 +178,10 @@ class Game
     @result = []
   end
 
-  # explain the rules.
-  # defintro
-  # end
-
-  # add methods to choose players. ie Human or Computer? Get names. etc.
-
   def play
     @board.display
-    set_player1
-    set_player2
+    set_player1 if gets.chomp
+    set_player2 if gets.chomp
     # tell(rules)
     secret_code
     guesses
@@ -140,6 +198,7 @@ class Game
       win?
       i += 1
     end
+    tell(round_winner)
   end
 
   # should output an array of guess results.
@@ -217,7 +276,7 @@ class Game
   def set_player2
     if player_type == 'human'
       @player2 = HumanPlayer.new
-      @player2.name = player_name
+      @player2.name = player_name    ########## it pauses here because it needs gets.chomp
       hello(@player2)
     else
       @player2 = ComputerPlayer.new
@@ -230,13 +289,6 @@ class Game
     true if @result == ['●', '●', '●', '●']
   end
 
-  def tell(things)
-    things.each do |thing|
-      @board.legend_contents = thing if gets.chomp
-      @board.display
-    end
-  end
-
   def hello(player)
     @board.legend_contents = "Hi #{player.name}."
     @board.display
@@ -245,42 +297,6 @@ class Game
   def introduce(player)
     @board.legend_contents = "This is #{player.name}."
     @board.display
-  end
-
-  def ask_code
-    [
-      'The codemaster needs to input a secret code.',
-      'Codemaster, enter your code please.'
-    ]
-  end
-
-  def ask_human_or_computer
-    ['Is this player human or computer?']
-  end
-
-  def ask_name
-    ['What is your name?']
-  end
-
-  def enter_guess
-    ['Codebreaker, enter your guess please.']
-  end
-
-  def rules
-    [
-      'First, the codemaker will create a four digit code.',
-      'The codebreaker will try to guess in 12 turns.',
-      'For each guess, the key on the right  will show the result.',
-      'For each correct digit in the correct spot it will show "O".',
-      'For each correct digit out of place it will show "o".',
-      'For each incorrect digit you will get 30 lashes.',
-      "......just seeing if you're paying attention still.",
-      'Incorrect digits get nothing.'
-    ]
-  end
-
-  def sorry
-    ['Sorry, please try that again.']
   end
 end
 
