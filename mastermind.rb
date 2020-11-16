@@ -1,5 +1,3 @@
-require 'pry'
-
 # frozen_string_literal: true
 
 # This module only holds text to be told to players.
@@ -160,7 +158,7 @@ class ComputerPlayer < Player
   end
 
   def code_input
-    4.times { @code.push(rand(6).to_s) }
+    4.times { @code.push(rand(1..6).to_s) }
   end
 end
 
@@ -192,6 +190,10 @@ class Game
     until win?
       tell(enter_guess)
       @player1.guess_input
+      while @player1.guess.length != 4
+        tell(sorry)
+        @player1.guess_input
+      end
       @board.decoding_rows[i] = @player1.guess
       @board.key_rows[i] = check_guess
       @board.display
@@ -266,6 +268,10 @@ class Game
   def secret_code
     tell(ask_code)
     @player2.code_input
+    while @player2.code.length != 4
+      tell(sorry)
+      @player2.code_input
+    end
   end
 
   def set_player1
@@ -302,4 +308,3 @@ end
 
 my_game = Game.new
 my_game.play
-p my_game
