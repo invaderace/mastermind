@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # This module only holds text to be told to players.
-module Instructions
+module Instructable
   def tell(things)
     tell_string(things) if things.class == String
     tell_array(things) if things.class == Array
@@ -126,6 +126,14 @@ class Board
     puts '---------------------------------------------'.center(line_width)
     puts
   end
+
+  def hide_code
+    @shield_row = ['?', '?', '?', '?']
+  end
+
+  def show_code(input)
+    @shield_row = input
+  end
 end
 
 # both player types setup.
@@ -164,7 +172,7 @@ end
 
 # All gameplay related things get made and stored here (players, board)
 class Game
-  include Instructions
+  include Instructable
 
   attr_accessor :board, :player1, :player2, :result
 
@@ -187,7 +195,7 @@ class Game
 
   def guesses
     i = 1
-    until win?
+    until round_win?
       tell(enter_guess)
       @player1.guess_input
       while @player1.guess.length != 4
@@ -197,9 +205,9 @@ class Game
       @board.decoding_rows[i] = @player1.guess
       @board.key_rows[i] = check_guess
       @board.display
-      win?
       i += 1
     end
+    @board.show_code(@player2.code)
     tell(round_winner)
   end
 
@@ -272,6 +280,7 @@ class Game
       tell(sorry)
       @player2.code_input
     end
+    @board.hide_code
   end
 
   def set_player1
@@ -291,7 +300,7 @@ class Game
     end
   end
 
-  def win?
+  def round_win?
     true if @result == ['●', '●', '●', '●']
   end
 
