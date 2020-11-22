@@ -26,6 +26,10 @@ module Instructable
     ]
   end
 
+  def ask_codebreaker_or_codemaster
+    'Will you be the codebreaker or codemaster?'
+  end
+
   def ask_human_or_computer
     'Is this player human or computer?'
   end
@@ -189,6 +193,7 @@ class Game
     set_player1 if gets.chomp
     set_player2 if gets.chomp
     # tell(rules)
+    set_player_roles
     secret_code
     guesses
   end
@@ -197,17 +202,17 @@ class Game
     i = 1
     until round_win?
       tell(enter_guess)
-      @player1.guess_input
-      while @player1.guess.length != 4
+      @codebreaker.guess_input
+      while @codebreaker.guess.length != 4
         tell(sorry)
-        @player1.guess_input
+        @codebreaker.guess_input
       end
-      @board.decoding_rows[i] = @player1.guess
+      @board.decoding_rows[i] = @codebreaker.guess
       @board.key_rows[i] = check_guess
       @board.display
       i += 1
     end
-    @board.show_code(@player2.code)
+    @board.show_code(@codemaster.code)
     tell(round_winner)
   end
 
@@ -218,6 +223,17 @@ class Game
     check_number_only
     fill_result
     @result
+  end
+  
+  def codebreaker_or_codemaster
+    tell(ask_codebreaker_or_codemaster)
+    answer = gets.chomp
+    if answer.downcase == 'codebreaker' || answer.downcase == 'codemaster'
+      answer
+    else
+      tell(sorry)
+      codebreaker_or_codemaster
+    end
   end
 
   def reset_guess
@@ -275,10 +291,10 @@ class Game
 
   def secret_code
     tell(ask_code)
-    @player2.code_input
-    while @player2.code.length != 4
+    @codemaster.code_input
+    while @codemaster.code.length != 4
       tell(sorry)
-      @player2.code_input
+      @codemaster.code_input
     end
     @board.hide_code
   end
@@ -298,6 +314,20 @@ class Game
       @player2.name
       introduce(@player2)
     end
+  end
+
+  def set_player_roles
+    if codebreaker_or_codemaster == 'codebreaker'
+      @codebreaker = @player1
+      @codemaster = @player2
+    else
+      @codebreaker = @player2
+      @codemaster = @player1
+    end
+  end
+
+  def swap_roles
+    #code to swap roles goes here.
   end
 
   def round_win?
